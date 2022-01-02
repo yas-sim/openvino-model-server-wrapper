@@ -48,7 +48,13 @@ deactivate
 ```
 - Start OpenVINO Model Server as Docker container
 ```sh
-docker run -d --rm -v $PWD/public/resnet-50-tf/FP16:/models/resnet50/1 -p 9000:9000 openvino/model_server:latest --model_path /models/resnet50 --model_name resnet_50 --port 9000
+docker run -d --rm \
+  -v $PWD/public/resnet-50-tf/FP16:/models/resnet50/1 \
+  -p 9000:9000 \
+  openvino/model_server:latest \
+  --model_path /models/resnet50 \
+  --model_name resnet_50 \
+  --port 9000
 ```
 OVMS will start serving the Resnet-50 model as model-name='resnet_50', model-version=1, and gRPC-port=9000.
 
