@@ -16,7 +16,8 @@ ovms.connect('127.0.0.1', 9000)
 model = ovms.open_model('resnet_50')
 print(model.inputs, model.outputs)
 
-image_file  = 'ovms/lib/python3.8/site-packages/skimage/data/rocket.jpg'
+# curl -O https://raw.githubusercontent.com/intel-iot-devkit/smart-video-workshop/master/Labs/daisy.jpg
+image_file  = 'daisy.jpg'
 img = cv2.imread(image_file)                # Read an image
 res = model.single_image_infer(img)         # Infer
 result = res[model.outputs[0]['name']]
@@ -25,6 +26,12 @@ result = res[model.outputs[0]['name']]
 nu = np.array(result)
 ma = np.argmax(nu)
 print("Result:", ma)
+```
+
+## Prerequisites
+You need to install some Python modules.   
+```sh
+python -m pip install -r requirements.txt
 ```
 
 ## How to setup OpenVINO Model Server (Ubuntu)
@@ -54,4 +61,6 @@ docker run -d --rm \
   --port 9000
 ```
 OVMS will start serving the Resnet-50 model as model-name='resnet_50', model-version=1, and gRPC-port=9000.
+
+## How to start OpenVINO model server with multiple models supported  
 

@@ -9,7 +9,8 @@ ovms.connect('127.0.0.1', 9000)
 model = ovms.open_model('resnet_50')
 print(model.inputs, model.outputs)
 
-image_file  = 'ovms/lib/python3.8/site-packages/skimage/data/rocket.jpg'
+# curl -O https://raw.githubusercontent.com/intel-iot-devkit/smart-video-workshop/master/Labs/daisy.jpg
+image_file  = 'daisy.jpg'
 img = cv2.imread(image_file)                # Read an image
 res = model.single_image_infer(img)         # Infer
 result = res[model.outputs[0]['name']]
