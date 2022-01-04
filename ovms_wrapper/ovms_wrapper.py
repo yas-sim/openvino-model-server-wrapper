@@ -9,17 +9,21 @@ import numpy as np
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
-from tensorflow import make_tensor_proto
+from tensorflow.core.framework import tensor_pb2, tensor_shape_pb2, types_pb2
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc, model_service_pb2_grpc
 from tensorflow_serving.apis import get_model_metadata_pb2, get_model_status_pb2
 
 class OpenVINO_Model_Server:
     state_names = { 0: "UNKNOWN", 10: "START", 20: "LOADING", 30: "AVAILABLE", 40: "UNLOADING", 50: "END" }
-    dtype_names = ['DT_INVALID', 'DT_FLOAT', 'DT_DOUBLE', 'DT_INT32', 'DT_UINT8', 'DT_INT16','DT_INT8', 
+    dtype_str   = ['DT_INVALID', 'DT_FLOAT', 'DT_DOUBLE', 'DT_INT32', 'DT_UINT8', 'DT_INT16','DT_INT8', 
                    'DT_STRING', 'DT_COMPLEX64', 'DT_INT64', 'DT_BOOL', 'DT_QINT8', 'DT_QUINT8', 'DT_QINT32',
                    'DT_BFLOAT16', 'DT_QINT16', 'DT_QUINT16', 'DT_UINT16', 'DT_COMPLEX128', 'DT_HALF', 
                    'DT_RESOURCE', 'DT_VARIANT', 'DT_UINT32', 'DT_UINT64']
+    dtype_npy   = [ None, np.float32, np.float64, np.int32, np.uint8, np.int16, np.int8, 
+                   np.unicode, np.complex64, np.int64, np.bool, np.int8, np.uint8, np.int32,
+                   'DT_BFLOAT16', np.int16, np.uint16, np.uint16, np.complex128, np.float16, 
+                   'DT_RESOURCE', 'DT_VARIANT', np.uint32, np.uint64]
 
     class OVMS_model_info:
         def __init__(self):
@@ -37,8 +41,14 @@ class OpenVINO_Model_Server:
             self.ovms = None
             self.available = False
 
+        def search_blob(self, blobs, blob_name:str):
+            for idx, blob in enumerate(blobs):
+                if blob['name']==blob_name:
+                    return idx
+            return -1
+
         # inputs: Dictionary for input blobs
-        # 'blobname1':contents, 'blobname2':contents, ...})
+        #   {'blobname1':contents, 'blobname2':contents, ...}
         def raw_infer(self, inputs, timeout:float=10.0):
             if self.available == False:
                 self.logger.error('Model "{}" is not available'.format(self.name))
@@ -46,14 +56,23 @@ class OpenVINO_Model_Server:
             # create a request for inference
             request = predict_pb2.PredictRequest()
             request.model_spec.name = self.model_name
-            for idx, (bname, bval) in enumerate(inputs.items()):
-                request.inputs[bname].CopyFrom(make_tensor_proto(bval, shape=bval.shape))
+            for bname, bval in inputs.items():
+                idx = self.search_blob(self.inputs, bname)
+                if idx == -1:
+                    self.logger.error('Input blob "{}"not found.'.format(bname))
+                    return None
+                dim = [tensor_shape_pb2.TensorShapeProto.Dim(size=i) for i in bval.shape]
+                shape = tensor_shape_pb2.TensorShapeProto(dim=dim)
+                content = bval.tobytes()
+                dtype = self.inputs[idx]['dtype_pb2']
+                tensor = tensor_pb2.TensorProto(dtype=dtype, tensor_shape=shape, tensor_content=content)
+                request.inputs[bname].CopyFrom(tensor)
             # submit infer request
             self.result = self.ovms.stub.Predict(request, timeout) 
             return self.result
 
         # Parse and translate inference result to a dictionary style data
-        # { 'outblob1':result, 'outblob2':result, ...}
+        #   { 'outblob1':result, 'outblob2':result, ...}
         def parse_results(self):
             if self.available == False:
                 self.logger.error('Model "{}" is not available'.format(self.name))
@@ -62,7 +81,7 @@ class OpenVINO_Model_Server:
             for outblob in self.outputs:
                 tensor = self.result.outputs[outblob['name']]
                 shape = [dim.size for dim in tensor.tensor_shape.dim]
-                content = np.frombuffer(tensor.tensor_content, dtype=np.float32).reshape(shape)
+                content = np.frombuffer(tensor.tensor_content, dtype=outblob['dtype_npy']).reshape(shape)
                 result[outblob['name']] = content
             return result
 
@@ -73,7 +92,7 @@ class OpenVINO_Model_Server:
             inblob = self.inputs[0]
             img = cv2.resize(img, inblob['shape'][2:])
             img = img.transpose((2,0,1))
-            img = img.reshape(inblob['shape']).astype(np.float32) # input is FP32
+            img = img.reshape(inblob['shape']).astype(inblob['dtype_npy'])
             self.raw_infer({inblob['name']:img})
             return self.parse_results()
 
@@ -131,14 +150,18 @@ class OpenVINO_Model_Server:
         for key in self.serving_inputs.keys():
             name = self.serving_inputs[key].name
             shape = [dim.size for dim in self.serving_inputs[key].tensor_shape.dim]
-            dtype = OpenVINO_Model_Server.dtype_names[self.serving_inputs[key].dtype]
-            model.inputs.append({'name':name, 'shape':shape, 'dtype':dtype})
+            dtype_pb2 = self.serving_inputs[key].dtype
+            dtype_npy = OpenVINO_Model_Server.dtype_npy[dtype_pb2]
+            dtype_str = OpenVINO_Model_Server.dtype_str[dtype_pb2]
+            model.inputs.append({'name':name, 'shape':shape, 'dtype_str':dtype_str, 'dtype_pb2':dtype_pb2, 'dtype_npy':dtype_npy})
         # parse output blob info
         for key in self.serving_outputs.keys():
             name = self.serving_outputs[key].name
             shape = [dim.size for dim in self.serving_outputs[key].tensor_shape.dim]
-            dtype = OpenVINO_Model_Server.dtype_names[self.serving_outputs[key].dtype]
-            model.outputs.append({'name':name, 'shape':shape, 'dtype':dtype})
+            dtype_pb2 = self.serving_outputs[key].dtype
+            dtype_npy = OpenVINO_Model_Server.dtype_npy[dtype_pb2]
+            dtype_str = OpenVINO_Model_Server.dtype_str[dtype_pb2]
+            model.outputs.append({'name':name, 'shape':shape, 'dtype_str':dtype_str, 'dtype_pb2':dtype_pb2, 'dtype_npy':dtype_npy})
         self.logger.info('input/output blob info: {} / {}'.format(model.inputs, model.outputs))
         model.ovms = self
         model.available = True
