@@ -31,7 +31,7 @@ print("Result:", ma)
 ## Prerequisites
 You need to install some Python modules.   
 ```sh
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-runtime.txt
 ```
 
 ## How to setup OpenVINO Model Server (Ubuntu)
@@ -61,6 +61,3 @@ docker run -d --rm \
   --port 9000
 ```
 OVMS will start serving the Resnet-50 model as model-name='resnet_50', model-version=1, and gRPC-port=9000.
-
-## How to start OpenVINO model server with multiple models supported  
-

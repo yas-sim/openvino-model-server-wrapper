@@ -9,7 +9,7 @@ import numpy as np
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
-import tensorflow as tf
+from tensorflow import make_tensor_proto
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc, model_service_pb2_grpc
 from tensorflow_serving.apis import get_model_metadata_pb2, get_model_status_pb2
@@ -47,7 +47,7 @@ class OpenVINO_Model_Server:
             request = predict_pb2.PredictRequest()
             request.model_spec.name = self.model_name
             for idx, (bname, bval) in enumerate(inputs.items()):
-                request.inputs[bname].CopyFrom(tf.make_tensor_proto(bval, shape=bval.shape))
+                request.inputs[bname].CopyFrom(make_tensor_proto(bval, shape=bval.shape))
             # submit infer request
             self.result = self.ovms.stub.Predict(request, timeout) 
             return self.result
@@ -60,7 +60,10 @@ class OpenVINO_Model_Server:
                 return None
             result = {}
             for outblob in self.outputs:
-                result[outblob['name']] = tf.make_ndarray(self.result.outputs[outblob['name']])
+                tensor = self.result.outputs[outblob['name']]
+                shape = [dim.size for dim in tensor.tensor_shape.dim]
+                content = np.frombuffer(tensor.tensor_content, dtype=np.float32).reshape(shape)
+                result[outblob['name']] = content
             return result
 
         def single_image_infer(self, img, timeout:float=10.0):
