@@ -17,8 +17,8 @@ img = cv2.resize(img, inblob['shape'][2:])
 img = img.transpose((2,0,1))
 img = img.reshape(inblob['shape']).astype(inblob['dtype_npy'])
 inblob_name = inblob['name']
-model.raw_infer({ inblob_name:img })         # Raw Infer
-res = model.parse_results()
+model.raw_infer({ inblob_name:img })            # Raw Infer
+res = model.parse_results()                     # Parse (decode) inference result
 result = res[model.outputs[0]['name']]
 
 # display result
