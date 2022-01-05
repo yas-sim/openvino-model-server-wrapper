@@ -9,7 +9,7 @@ import numpy as np
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
-from tensorflow.core.framework import tensor_pb2, tensor_shape_pb2, types_pb2
+from tensorflow.core.framework import tensor_pb2, tensor_shape_pb2
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc, model_service_pb2_grpc
 from tensorflow_serving.apis import get_model_metadata_pb2, get_model_status_pb2
