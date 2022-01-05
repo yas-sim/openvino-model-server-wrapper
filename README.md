@@ -96,9 +96,9 @@ cp ./mapping_config-resnet-50-tf.json ./ovms_model_repository/models/resnet-50-t
 ```
 ovms_model_repository/
 └── models
-    ├── config.json                     (<- model configuration file)
+    ├── config.json                     # <- model configuration file
     ├── face-detection-0200
-    │   └── 1                           ( <- Model version number. A positive integer value)
+    │   └── 1                           # <- Model version number. A positive integer value
     │       ├── face-detection-0200.bin
     │       └── face-detection-0200.xml
     ├── googlenet-v1-tf
@@ -108,7 +108,7 @@ ovms_model_repository/
     │       └── googlenet-v1-tf.xml
     └── resnet-50-tf
         └── 1
-            ├── mapping_config.json     (<- in/out blob name alias definition. optional)
+            ├── mapping_config.json     # <- in/out blob name alias definition. optional
             ├── resnet-50-tf.bin
             ├── resnet-50-tf.mapping
             └── resnet-50-tf.xml
@@ -120,7 +120,7 @@ ovms_model_repository/
     "model_config_list":[
         {
             "config": {
-                "name":"resnet_50",
+                "name":"resnet_50",       # <- Model name which will be exposed to the clients
                 "base_path":"/opt/models/resnet-50-tf",
                 "batch_size":"1",
                 "plugin_config": {"CPU_THROUGHPUT_STREAMS": "CPU_THROUGHPUT_AUTO"}
