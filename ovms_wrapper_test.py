@@ -5,8 +5,8 @@ import numpy as np
 
 ovms = OpenVINO_Model_Server()
 ovms.connect('127.0.0.1', 9000)
-#print(ovms.get_model_status('resnet_50'))
-model = ovms.open_model('resnet_50')
+#print(ovms.get_model_status('resnet-50-tf'))
+model = ovms.open_model('resnet-50-tf')
 print(model.inputs, model.outputs)
 
 # curl -O https://raw.githubusercontent.com/intel-iot-devkit/smart-video-workshop/master/Labs/daisy.jpg

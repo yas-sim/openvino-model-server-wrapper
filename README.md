@@ -1,7 +1,11 @@
 # OpenVINO Model Server wrapper API for Python
 ## Description
-This project provides a Python wrapper class for OpenVINO Model Server.  
+This project provides a Python wrapper class for OpenVINO Model Server ('OVMS' in short).  
 User can submit DL inference request to OVMS with just a few lines of code.  
+
+This project also includes the instruction to setup OpenVINO model server to support multiple models.
+
+Also, the project provides an automation Python script to generate OVMS model repository in a single line of command. Users can generate a model repository for OVMS by just  preparing a directry which containts multiple OpenVINO IR models, and running the script.
 
 ## Sample code
 ```python
@@ -166,5 +170,20 @@ docker run -d --rm --name ovms \
 ```
 
 Now OVMS serves '`resnet_50`', '`googlenet_v1`' and '`face-detection-0200`' models.
+
+----
+
+## OpenVINO Model Server - Model repository setup automation tool `setup_ovms_model_repo.py`  
+`setup_ovms_model_repo.py` in `./model-repo-generator/` searches OpenVINO IR models in the specified source directory and create an OpenVINO Model Server model repository. It generates required `config.json` file as well.  
+User can create the model repository with this script and just pass it to OVMS to start the inference service.   
+
+|option|descriotion|
+|----|----|
+|`-m`, `-model_dir`| Source directory that contains OpenVINO IR models|
+|`-o`, `-output_dir`| OVMS model repository directry to generate|
+- Command line example:
+```sh
+python3 model-repo-generator/setup_ovms_model_repo.py -m ir_models -o ovms_repo
+```
 
 END
