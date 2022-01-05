@@ -181,6 +181,8 @@ User can create the model repository with this script and just pass it to OVMS t
 |----|----|
 |`-m`, `-model_dir`| Source directory that contains OpenVINO IR models|
 |`-o`, `-output_dir`| OVMS model repository directry to generate|
+|`--verbose`|Verbose mode flag|
+|`--dryrun`|Dryrun flag. Nothing will be written nor generated. Useful with `--verbose` flag|
 - Command line example:
 ```sh
 python3 model-repo-generator/setup_ovms_model_repo.py -m ir_models -o ovms_repo
