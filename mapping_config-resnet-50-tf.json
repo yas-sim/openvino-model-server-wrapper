@@ -1,0 +1,8 @@
+{
+        "inputs": { 
+            "map/TensorArrayStack/TensorArrayGatherV3":"input_blob"
+        },
+        "outputs":{
+            "softmax_tensor":"output_blob"
+        }
+}

@@ -1,0 +1,27 @@
+{
+    "model_config_list":[
+        {
+            "config": {
+                "name":"resnet_50",
+                "base_path":"/opt/models/resnet-50-tf",
+                "batch_size":"1",
+                "plugin_config": {"CPU_THROUGHPUT_STREAMS": "CPU_THROUGHPUT_AUTO"}
+            }
+        },
+        {
+            "config": {
+                "name":"googlenet_v1",
+                "base_path":"/opt/models/googlenet-v1-tf",
+                "batch_size":"1",
+                "nireq":4,
+                "target_device":"CPU"
+            }
+        },
+        {
+            "config": {
+                "name":"face-detection-0200",
+                "base_path":"/opt/models/face-detection-0200"
+            }
+        }
+    ]
+}
