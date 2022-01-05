@@ -85,15 +85,19 @@ class OpenVINO_Model_Server:
                 result[outblob['name']] = content
             return result
 
+        def image_preprocess(self, blob, img:np.ndarray):
+            bdata = cv2.resize(img, blob['shape'][2:])
+            bdata = bdata.transpose((2,0,1))
+            bdata = bdata.reshape(blob['shape']).astype(blob['dtype_npy'])
+            return bdata
+
         def single_image_infer(self, img, timeout:float=10.0):
             if self.available == False:
                 self.logger.error('Model "{}" is not available'.format(self.name))
                 return None
             inblob = self.inputs[0]
-            img = cv2.resize(img, inblob['shape'][2:])
-            img = img.transpose((2,0,1))
-            img = img.reshape(inblob['shape']).astype(inblob['dtype_npy'])
-            self.raw_infer({inblob['name']:img})
+            bdata = self.image_preprocess(inblob, img)
+            self.raw_infer({inblob['name']:bdata})
             return self.parse_results()
 
     def __init__(self):

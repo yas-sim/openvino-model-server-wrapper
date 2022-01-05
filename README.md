@@ -31,7 +31,7 @@ print("Result:", ma)
 ## Prerequisites
 You need to install some Python modules.   
 ```sh
-python -m pip install -r requirements-runtime.txt
+python -m pip install -r requirements.txt
 ```
 
 ## How to setup OpenVINO Model Server (Ubuntu)
