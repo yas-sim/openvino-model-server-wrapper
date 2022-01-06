@@ -1,6 +1,6 @@
 # OpenVINO Model Server wrapper API for Python
 ## Description
-This project provides a Python wrapper class for OpenVINO Model Server ('OVMS' in short).  
+This project provides a Python wrapper class for [OpenVINO Model Server](https://github.com/openvinotoolkit/model_server) ('OVMS' in short).  
 User can submit DL inference request to OVMS with just a few lines of code.  
 
 This project also includes the instruction to setup OpenVINO model server to support multiple models.
@@ -40,11 +40,12 @@ python -m pip install -r requirements.txt
 ----
 ## How to setup OpenVINO Model Server (Single model support, Ubuntu)
 Note: OVMS can run on Windows too. Please refer to the [official OVMS document](https://docs.openvino.ai/latest/openvino_docs_ovms.html) for details.  
+1. Install prerequisites
 ```sh
 sudo apt update && sudo apt install -y python3-venv
 python -m pip install tensorflow tensorflow-serving-api
 ```
-- Create Python virtual env, install OpenVINO, and prepare an IR model  
+2. Create Python virtual env, install OpenVINO, and prepare an IR model  
 Installing OpenVINO just for downloading a DL model and converting it into OpenVINO IR model. This is not required if you already have the IR models.  
 ```sh
 python3 -m venv ovms
@@ -54,7 +55,7 @@ omz_downloader --name resnet-50-tf
 omz_converter --name resnet-50-tf --precisions FP16
 deactivate
 ```
-- Start OpenVINO Model Server as Docker container
+3. Start OpenVINO Model Server as Docker container
 ```sh
 docker run -d --rm --name ovms \
   -v $PWD/public/resnet-50-tf/FP16:/models/resnet50/1 \
@@ -70,7 +71,12 @@ OVMS will start serving the Resnet-50 model as model-name='resnet_50', model-ver
 ## How to setup OpenVINO Model Server for multiple model support (Ubuntu)  
 
 ### Prepare the model directory with IR models and configuration files (JSON)  
-1. Install OpenVINO for temporal use, and download and convert the models.  
+1. Install prerequisites
+```sh
+sudo apt update && sudo apt install -y python3-venv
+python -m pip install tensorflow tensorflow-serving-api
+```
+2. Install OpenVINO for temporal use, and download and convert the models.  
 **Note1:** Following steps are summarized in `'setup_model_repository.sh`' shell script for user's convenience.  
 **Note2:** You don't need to re-create a new 'venv' if you already have one. Just activate it and use it.  
 **Note3:** '`face-detection-0200`' model is a Intel model. It is distributed as an OpenVINO IR model. You can use the model by just downloading it without conversion.   
@@ -82,8 +88,9 @@ omz_downloader --name resnet-50-tf,googlenet-v1-tf,face-detection-0200 --precisi
 omz_converter  --name resnet-50-tf,googlenet-v1-tf                     --precisions FP16
 ```
 
-2. Prepare the model repository for OVMS.  
-**Note1:** `config.json` defines model specification.  
+3. Setup the model repository for OVMS.  
+OVMS requires the IR models to be stored in a specific directory structure. You need to create a compatible directry tree structure and place IR models accordingly. Also, OVMS requires a repository configuration file (`config.json`). Please refer to the [official document](https://github.com/openvinotoolkit/model_server/blob/main/docs/docker_container.md#configfile) for details.  
+**Note1:** `config.json` defines model specification in the model repository.  
 **Note2:** `mapping_config.json` defines alias name for input and output blobs in the model. You can give fiendly name to those blobs for your convenience. This is optional.  
 ```sh
 mkdir -p ./ovms_model_repository/models/resnet-50-tf/1
@@ -96,7 +103,7 @@ cp ./model-config.json                ./ovms_model_repository/models/config.json
 cp ./mapping_config-resnet-50-tf.json ./ovms_model_repository/models/resnet-50-tf/1/mapping_config.json
 ```
 
-- The model repository structure after this operation will look like this.  
+- The model repository directry structure after this operation will look like this.  
 ```
 ovms_model_repository/
 └── models
@@ -150,7 +157,7 @@ ovms_model_repository/
 
 ```
 
-3. Start OVMS Docker container with the model repository.  
+4. Start OVMS Docker container with the model repository.  
 ```sh
 docker run -d --rm --name ovms \
   -v $PWD/ovms_model_repository/models:/opt/models \
