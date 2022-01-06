@@ -191,7 +191,7 @@ Now OVMS serves '`resnet_50`', '`googlenet_v1`' and '`face-detection-0200`' mode
 ----
 
 ## OpenVINO Model Server - Model repository setup automation tool `setup_ovms_model_repo.py`  
-`setup_ovms_model_repo.py` in `./model-repo-generator/` searches OpenVINO IR models in the specified source directory and create an OpenVINO Model Server model repository. It generates required `config.json` file as well.  
+`setup_ovms_model_repo.py` in `./model-repo-generator/` searches OpenVINO IR models in the specified source directory and create an model repository for OpenVINO Model Server. It generates required `config.json` file as well.  
 User can create the model repository with this script and just pass it to OVMS to start the inference service.   
 
 |option|descriotion|
