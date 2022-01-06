@@ -50,7 +50,7 @@ Installing OpenVINO just for downloading a DL model and converting it into OpenV
 ```sh
 python3 -m venv ovms
 . ovms/bin/activate
-python -m pip install openvino-dev
+python -m pip install openvino-dev tensorflow
 omz_downloader --name resnet-50-tf
 omz_converter --name resnet-50-tf --precisions FP16
 deactivate
