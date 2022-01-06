@@ -10,10 +10,10 @@ def main(args):
     if not os.path.isdir(ir_model_dir):
         print('Source directory doesn\'t exist. \'{}\''.format(ir_model_dir))
         return -1
-    ovms_model_repo_dir = args.output_dir
 
     # Search for IR models in the source directory
     xml_list = glob.glob(ir_model_dir+'/**/*.xml', recursive=True)
+
     # Check if corresponding '.bin' is existing.
     ir_models = []
     for xml in xml_list:
@@ -22,7 +22,7 @@ def main(args):
             ir_models.append(xml)
         else:
             if args.verbose == True:
-                print('{} is rejected because no corresponding .bin file exists.'.format(xml))
+                print('\'{}\' is rejected because no corresponding .bin file exists.'.format(xml))
     if args.verbose: print()
 
     if len(ir_models)==0:
@@ -30,19 +30,20 @@ def main(args):
         return -1
 
     if args.verbose == True:
-        print(len(ir_models), 'models found.')
+        print(len(ir_models), 'IR models found.')
         for model in ir_models:
             print(model)
         print()
 
-    # Generate model name and check name duplication
-    # If a duplicate is found, add parent direstory name as the postfix. (model -> model-fp32)
+    # Generate model name and check name conflict
+    # If a model name conflict is found, add parent direstory name as the postfix.
+    # e.g. 'model' -> 'model-fp32'
     model_list = []
     for ir_model in ir_models:
         path, filename = os.path.split(ir_model)
         base, ext = os.path.splitext(filename)
         model_name = base
-        for model in model_list:    # check if the same base name does already exist
+        for model in model_list:    # check if the same base name already exists
             if model['base'] == base:
                 if model['model_name'] == base:   # check if the model name is the same as model_name to avoid multiple postfix addition
                     splitted_path = model['path'].split(os.sep)
@@ -50,6 +51,8 @@ def main(args):
                 splitted_path = path.split(os.sep)
                 model_name = (base + '-' + splitted_path[-1]).lower()  # add postfix
         model_list.append({'path':path, 'filename':filename, 'base':base, 'ext':ext, 'model_name':model_name.lower()})
+
+    ovms_model_repo_dir = args.output_dir
 
     # Copy IR models to repository. Construct config data.
     config = { 'model_config_list' : [] }
@@ -93,12 +96,13 @@ def main(args):
     config_file_name = os.path.join(ovms_model_repo_dir, 'models', 'config.json')
     if args.verbose:
         json.dump(cfg, sys.stdout, indent=4)
+        print()
     if args.dryrun == False:
         with open(config_file_name, 'wt') as f:
             json.dump(cfg, f, indent=4)
             print('OVMS model repository has been created in \'{}\'. \'{}\' configuration file is created.'.format(ovms_model_repo_dir, config_file_name))
     else:
-        print('\nDryrun completed.')
+        print('Dryrun completed.')
 
     return 0
 
