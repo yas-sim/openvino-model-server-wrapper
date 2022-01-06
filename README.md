@@ -204,5 +204,6 @@ User can create the model repository with this script and just pass it to OVMS t
 ```sh
 python3 model-repo-generator/setup_ovms_model_repo.py -m ir_models -o ovms_repo
 ```
+![image](resources/repo-generation.png)
 
 END
