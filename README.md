@@ -7,7 +7,7 @@ This project also includes the instruction to setup OpenVINO model server to sup
 
 Also, the project provides an automation Python script to generate OVMS model repository in a single line of command. Users can generate a model repository for OVMS by just  preparing a directory which contains multiple OpenVINO IR models, and running the script.
 
-## Sample code
+## Sample client inference code
 ```python
 from ovms_wrapper.ovms_wrapper import OpenVINO_Model_Server
 
@@ -65,7 +65,9 @@ docker run -d --rm --name ovms \
   --model_name resnet_50 \
   --port 9000
 ```
-OVMS will start serving the Resnet-50 model as model-name='resnet_50', model-version=1, and gRPC-port=9000.
+OVMS will start serving the Resnet-50 model as model-name='resnet_50', model-version=1, and gRPC-port=9000.  
+Now you can run a sample client inference program to test the OVMS.  
+**Note:** You can run the client code from any PC or node as long as it is IP reachable to the OVMS. You might need to modify the IP address in the client code accordingly.  
 
 ----
 ## How to setup OpenVINO Model Server for multiple model support (Ubuntu)  
