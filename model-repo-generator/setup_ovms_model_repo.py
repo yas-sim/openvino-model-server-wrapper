@@ -13,12 +13,27 @@ def main(args):
     ovms_model_repo_dir = args.output_dir
 
     # Search for IR models in the source directory
-    ir_models = glob.glob(ir_model_dir+'/**/*.xml', recursive=True)
+    xml_list = glob.glob(ir_model_dir+'/**/*.xml', recursive=True)
+    # Check if corresponding '.bin' is existing.
+    ir_models = []
+    for xml in xml_list:
+        path, ext = os.path.splitext(xml)
+        if os.path.isfile(path+'.bin'):
+            ir_models.append(xml)
+        else:
+            if args.verbose == True:
+                print('{} is rejected because no corresponding .bin file exists.'.format(xml))
+    if args.verbose: print()
+
     if len(ir_models)==0:
         print('No IR model found in \'{}\'.'.format(ir_model_dir))
         return -1
+
     if args.verbose == True:
         print(len(ir_models), 'models found.')
+        for model in ir_models:
+            print(model)
+        print()
 
     # Generate model name and check name duplication
     # If a duplicate is found, add parent direstory name as the postfix. (model -> model-fp32)
@@ -47,14 +62,16 @@ def main(args):
         # Create directry and copy an IR model
         if args.dryrun == False:
             os.makedirs(model_path, exist_ok=True)
-            if args.verbose == True:
-                print('MKDIR {}'.format(model_path))
+        if args.verbose:
+            print('MKDIR {}'.format(model_path))
+        if args.dryrun == False:
             shutil.copy(os.path.join(model['path'], src_xml_name), os.path.join(model_path, dst_xml_name))
-            if args.verbose == True:
-                print('CP {} {}'.format(os.path.join(model['path'], src_xml_name), os.path.join(model_path, dst_xml_name)))
+        if args.verbose:
+            print('CP {} {}'.format(os.path.join(model['path'], src_xml_name), os.path.join(model_path, dst_xml_name)))
+        if args.dryrun == False:
             shutil.copy(os.path.join(model['path'], src_bin_name), os.path.join(model_path, dst_bin_name))
-            if args.verbose == True:
-                print('CP {} {}'.format(os.path.join(model['path'], src_bin_name), os.path.join(model_path, dst_bin_name)))
+        if args.verbose:
+            print('CP {} {}'.format(os.path.join(model['path'], src_bin_name), os.path.join(model_path, dst_bin_name)))
 
         ovms_model_path = os.path.join('/opt/models/', model['model_name'])    # model path from OVMS container perspective
         cfg_str = { 
@@ -69,11 +86,12 @@ def main(args):
             }
         }
         config['model_config_list'].append(cfg_str)
+    if args.verbose: print()
 
     # Write out the config data as a JSON file.
     cfg = json.loads(str(config).replace('\'', '"'))
     config_file_name = os.path.join(ovms_model_repo_dir, 'models', 'config.json')
-    if args.verbose == True:
+    if args.verbose:
         json.dump(cfg, sys.stdout, indent=4)
     if args.dryrun == False:
         with open(config_file_name, 'wt') as f:
