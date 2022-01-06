@@ -35,27 +35,31 @@ print("Result:", ma)
 ## Prerequisites
 You need to install some Python modules.   
 ```sh
-python -m pip install -r requirements.txt
+python3 -m pip install --update pip setuptools
+python3 -m pip install -r requirements.txt
 ```
 ----
 ## How to setup OpenVINO Model Server (Single model support, Ubuntu)
 Note: OVMS can run on Windows too. Please refer to the [official OVMS document](https://docs.openvino.ai/latest/openvino_docs_ovms.html) for details.  
-1. Install prerequisites
+1. Install prerequisites  
 ```sh
-sudo apt update && sudo apt install -y python3-venv
-python -m pip install tensorflow tensorflow-serving-api
+sudo apt update && sudo apt install -y docker.io python3-venv
+python3 -m pip install --upgrade pip setuptools
+python3 -m pip install tensorflow tensorflow-serving-api
 ```
-2. Create Python virtual env, install OpenVINO, and prepare an IR model  
-Installing OpenVINO just for downloading a DL model and converting it into OpenVINO IR model. This is not required if you already have the IR models.  
+2. Prepare a DL model  
+Install OpenVINO for temporal use, and download and convert a model.  
+**Note:** You don't need to re-create a new 'venv' if you already have one. Just activate it and use it.  
 ```sh
-python3 -m venv ovms
-. ovms/bin/activate
-python -m pip install openvino-dev tensorflow
+python3 -m venv venv__temp
+. venv__temp/bin/activate
+python3 -m pip install openvino-dev tensorflow
 omz_downloader --name resnet-50-tf
-omz_converter --name resnet-50-tf --precisions FP16
+omz_converter  --name resnet-50-tf --precisions FP16
 deactivate
 ```
-3. Start OpenVINO Model Server as Docker container
+3. Start OpenVINO Model Server as a Docker container  
+Docker will pull the pre-built '`openvino/model_server`' image from the Docker hub, create a container and run it.  
 ```sh
 docker run -d --rm --name ovms \
   -v $PWD/public/resnet-50-tf/FP16:/models/resnet50/1 \
@@ -73,21 +77,24 @@ Now you can run a sample client inference program to test the OVMS.
 ## How to setup OpenVINO Model Server for multiple model support (Ubuntu)  
 
 ### Prepare the model directory with IR models and configuration files (JSON)  
-1. Install prerequisites
+1. Install prerequisites  
 ```sh
-sudo apt update && sudo apt install -y python3-venv
-python -m pip install tensorflow tensorflow-serving-api
+sudo apt update && sudo apt install -y docker.io python3-venv
+python3 -m pip install --upgrade pip setuptools
+python3 -m pip install tensorflow tensorflow-serving-api
 ```
-2. Install OpenVINO for temporal use, and download and convert the models.  
+2. Prepare DL models  
+Install OpenVINO for temporal use, and download and convert the models.  
 **Note1:** Following steps are summarized in `'setup_model_repository.sh`' shell script for user's convenience.  
 **Note2:** You don't need to re-create a new 'venv' if you already have one. Just activate it and use it.  
 **Note3:** '`face-detection-0200`' model is a Intel model. It is distributed as an OpenVINO IR model. You can use the model by just downloading it without conversion.   
 ```sh
-python3 -m venv venv-ov-temp__
-. venv-ov-temp__/bin/activate
+python3 -m venv venv__temp
+. venv__temp/bin/activate
 python3 -m pip install openvino-dev tensorflow
 omz_downloader --name resnet-50-tf,googlenet-v1-tf,face-detection-0200 --precisions FP16
 omz_converter  --name resnet-50-tf,googlenet-v1-tf                     --precisions FP16
+deactivate
 ```
 
 3. Setup the model repository for OVMS.  
@@ -160,6 +167,7 @@ ovms_model_repository/
 ```
 
 4. Start OVMS Docker container with the model repository.  
+Docker will pull the pre-built '`openvino/model_server`' image from the Docker hub, create a container and run it.  
 ```sh
 docker run -d --rm --name ovms \
   -v $PWD/ovms_model_repository/models:/opt/models \
