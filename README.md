@@ -5,7 +5,7 @@ User can submit DL inference request to OVMS with just a few lines of code.
 
 This project also includes the instruction to setup OpenVINO model server to support multiple models.
 
-Also, the project provides an automation Python script to generate OVMS model repository in a single line of command. Users can generate a model repository for OVMS by just  preparing a directry which containts multiple OpenVINO IR models, and running the script.
+Also, the project provides an automation Python script to generate OVMS model repository in a single line of command. Users can generate a model repository for OVMS by just  preparing a directory which contains multiple OpenVINO IR models, and running the script.
 
 ## Sample code
 ```python
@@ -89,7 +89,7 @@ omz_converter  --name resnet-50-tf,googlenet-v1-tf                     --precisi
 ```
 
 3. Setup the model repository for OVMS.  
-OVMS requires the IR models to be stored in a specific directory structure. You need to create a compatible directry tree structure and place IR models accordingly. Also, OVMS requires a repository configuration file (`config.json`). Please refer to the [official document](https://github.com/openvinotoolkit/model_server/blob/main/docs/docker_container.md#configfile) for details.  
+OVMS requires the IR models to be stored in a specific directory structure. You need to create a compatible directory tree structure and place IR models accordingly. Also, OVMS requires a repository configuration file (`config.json`). Please refer to the [official document](https://github.com/openvinotoolkit/model_server/blob/main/docs/docker_container.md#configfile) for details.  
 **Note1:** `config.json` defines model specification in the model repository.  
 **Note2:** `mapping_config.json` defines alias name for input and output blobs in the model. You can give fiendly name to those blobs for your convenience. This is optional.  
 ```sh
@@ -103,7 +103,7 @@ cp ./model-config.json                ./ovms_model_repository/models/config.json
 cp ./mapping_config-resnet-50-tf.json ./ovms_model_repository/models/resnet-50-tf/1/mapping_config.json
 ```
 
-- The model repository directry structure after this operation will look like this.  
+- The model repository directory structure after this operation will look like this.  
 ```
 ovms_model_repository/
 └── models
@@ -187,7 +187,7 @@ User can create the model repository with this script and just pass it to OVMS t
 |option|descriotion|
 |----|----|
 |`-m`, `-model_dir`| Source directory that contains OpenVINO IR models|
-|`-o`, `-output_dir`| OVMS model repository directry to generate|
+|`-o`, `-output_dir`| OVMS model repository directory to generate|
 |`--verbose`|Verbose mode flag|
 |`--dryrun`|Dryrun flag. Nothing will be written nor generated. Useful with `--verbose` flag|
 - Command line example:
