@@ -7,6 +7,9 @@ This project also includes the instruction to setup OpenVINO model server to sup
 
 Also, the project provides an automation Python script to generate OVMS model repository in a single line of command. Users can generate a model repository for OVMS by just  preparing a directory which contains multiple OpenVINO IR models, and running the script.
 
+This wrapper API needs 'tensorflow' and 'tensorflow-serving-api' to run.  
+For the users those don't want to install those big libraries, **this project provides an alternative solution**. User can generate Google protocol buffer handler codes which requires to send gRPC request and use it instead of installing full-blown tensorflow and tensorflow-serving-api.  
+
 ## Sample client inference code
 ```python
 from ovms_wrapper.ovms_wrapper import OpenVINO_Model_Server
@@ -206,4 +209,24 @@ python3 model-repo-generator/setup_ovms_model_repo.py -m ir_models -o ovms_repo
 ```
 ![image](resources/repo-generation.png)
 
+## How to build gRPC handlers to use the OVMS wrapper without having TensorFlow and TensorFlow-serving-api  
+1. Rename directories  
+This would make a name space conflict of Python module if you have installed 'tensorflow' and 'tensorflow-serving-api'. You must not have those Python modules on your system.   
+```bash
+mv _tensorflow tensorflow
+mv _tensorflow_serving tensorflow_serving
+```
+2. Run the build script to generate gRPC handler codes
+```bash
+./build_proto.sh
+```
+You'll have a set of Python scripts which handles gRPC request for OVMS.  
+Now you can use the OVMS wrapper without having 'tensorflow' and 'tensorflow-serving-api'.  
+```
+.
+├── ovms_wrapper
+├── tensorflow
+├── tensorflow_serving
+└── <YOUR_CODE.py>
+```
 END
