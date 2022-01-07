@@ -232,4 +232,7 @@ Now you can use the OVMS wrapper without having 'tensorflow' and 'tensorflow-ser
 ├── tensorflow_serving
 └── <YOUR_CODE.py>
 ```
+**Exmple:** Running OVMS client program using OVMS wrapper on Raspbian OS (without Tensorflow installed)  
+![raspberrypi](resources/raspberrypi.png)
+
 END
