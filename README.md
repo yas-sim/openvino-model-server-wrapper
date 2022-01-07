@@ -209,7 +209,8 @@ python3 model-repo-generator/setup_ovms_model_repo.py -m ir_models -o ovms_repo
 ```
 ![image](resources/repo-generation.png)
 
-## How to build gRPC handlers to use the OVMS wrapper without having TensorFlow and TensorFlow-serving-api  
+## How to run OVMS wrapper API without having TensorFlow and tensorflow-serving-api
+  
 1. Rename directories  
 This operation would make a name space conflict of Python module if you have installed 'tensorflow' and 'tensorflow-serving-api'. You must not have those Python modules on your system.   
 ```bash
