@@ -216,11 +216,14 @@ This would make a name space conflict of Python module if you have installed 'te
 mv _tensorflow tensorflow
 mv _tensorflow_serving tensorflow_serving
 ```
-2. Run the build script to generate gRPC handler codes
+2. Install prerequisites  
+```bash
+python3 -m pip install grpcio-tools
+```
+3. Run the build script to generate gRPC handler codes
 ```bash
 ./build_proto.sh
 ```
-You'll have a set of Python scripts which handles gRPC request for OVMS.  
 Now you can use the OVMS wrapper without having 'tensorflow' and 'tensorflow-serving-api'.  
 ```
 .
