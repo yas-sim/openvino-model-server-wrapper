@@ -81,11 +81,11 @@ def main(args):
             'config': { 
                 'name'          : model['model_name'],
                 'base_path'     : ovms_model_path,
-                "batch_size"    : "auto",
-                "target_device" : "CPU",
-                "plugin_config" : {},
-                "nireq"         : 0,
-                "model_version_policy" : {"all":{}},
+                'batch_size'    : 'auto',
+                'target_device' : 'CPU',
+                'plugin_config' : {},
+                'nireq'         : 0,
+                'model_version_policy' : {'all':{}},
             }
         }
         config['model_config_list'].append(cfg_str)
@@ -100,7 +100,7 @@ def main(args):
     if args.dryrun == False:
         with open(config_file_name, 'wt') as f:
             json.dump(cfg, f, indent=4)
-            print('OVMS model repository has been created in \'{}\'. \'{}\' configuration file is created.'.format(ovms_model_repo_dir, config_file_name))
+        print('OVMS model repository has been created in \'{}\'. \'{}\' configuration file is created.'.format(ovms_model_repo_dir, config_file_name))
     else:
         print('Dryrun completed.')
 
