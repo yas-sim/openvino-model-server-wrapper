@@ -212,7 +212,8 @@ python3 model-repo-generator/setup_ovms_model_repo.py -m ir_models -o ovms_repo
 ## How to run OVMS wrapper API without having TensorFlow and tensorflow-serving-api
   
 1. Rename directories  
-This operation would make a name space conflict of Python module if you have installed 'tensorflow' and 'tensorflow-serving-api'. You must not have those Python modules on your system.   
+Remove '`_`' on top of '`_tensorflow`' and '`_tensorflow_serving`' directory names.  
+This operation would make a name space conflict of Python modules if you have already installed 'tensorflow' and 'tensorflow-serving-api' on your system. You must not have those Python modules.   
 ```bash
 mv _tensorflow tensorflow
 mv _tensorflow_serving tensorflow_serving
