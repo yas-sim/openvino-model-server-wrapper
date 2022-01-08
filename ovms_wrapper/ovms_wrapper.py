@@ -86,7 +86,7 @@ class OpenVINO_Model_Server:
             return result
 
         def image_preprocess(self, blob, img:np.ndarray):
-            bdata = cv2.resize(img, blob['shape'][2:])
+            bdata = cv2.resize(img, tuple(blob['shape'][-1:-3:-1]))
             bdata = bdata.transpose((2,0,1))
             bdata = bdata.reshape(blob['shape']).astype(blob['dtype_npy'])
             return bdata
