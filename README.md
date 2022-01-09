@@ -245,15 +245,15 @@ You can try demo programs with OVMS wrapper.
 You need to download required models and start OVMS before you run the demo programs.
 
 1. Setup OVMS  
-[How to Setup OVMS for Demo Programs](samples/ovms_setup_for_demos/)
+[How to Setup OVMS for Demo Programs](./samples/ovms_setup_for_demos/README.md)
 
 2. Human Pose Estimation demo  
 You need to build a C++ based Python module to run demo.  
-[How to run](./samples/human-pose-estimation-2d)  
+[How to run](./samples/human-pose-estimation-2d/README.md)  
 ![hp](./samples/human-pose-estimation-2d/resources/human-pose-demo.png)
 
 3. Object Detection / Line Crossing / Area Intrusion demo  
-[How to run](./samples/object-tracking-line-crossing-area-intrusion)  
+[How to run](./samples/object-tracking-line-crossing-area-intrusion/README.md)  
 ![od](./samples/object-tracking-line-crossing-area-intrusion/resources/object-track.gif)
 
 END
