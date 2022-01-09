@@ -8,7 +8,7 @@ This project also includes the [instruction to setup OpenVINO model server to su
 Also, the project provides [an automation Python script to generate OVMS model repository](#openvino-model-server---model-repository-setup-automation-tool) in a single line of command. Users can generate a model repository for OVMS by just  preparing a directory which contains multiple OpenVINO IR models, and running the script.
 
 This wrapper API needs 'tensorflow' and 'tensorflow-serving-api' to run.  
-For the users those don't want to install those big libraries, **this project provides an [alternative solution](#how-to-run-ovms-wrapper-api-without-having-tensorflow-and-tensorflow-serving-api)**. User can use generated gRPC handler code that is included in this project instead of installing TensorFlow and TensorFlow-serving-API. This alternative solution allows user to submit inference request to OVMS from non-IA client devices very easily.  
+For the users those don't want to install those big libraries, **this project provides an [alternative solution](#how-to-run-ovms-wrapper-api-without-having-tensorflow-and-tensorflow-serving-api)**. User can use bundled gRPC handler code in this project instead of installing TensorFlow and TensorFlow-serving-API. This alternative solution allows user to submit inference request to OVMS from non-IA client devices.  
 
 The project also includes several [demo programs](#demo-programs) as user's reference.  
 
