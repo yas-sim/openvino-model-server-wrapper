@@ -245,7 +245,7 @@ You can try demo programs with OVMS wrapper.
 You need to download required models and start OVMS before you run the demo programs.
 
 1. Setup OVMS  
-[How to Setup OVMS for Demo Programs](./samples/ovms_setup_for_demos/)
+[How to Setup OVMS for Demo Programs](samples/ovms_setup_for_demos/)
 
 2. Human Pose Estimation demo  
 You need to build a C++ based Python module to run demo.  
