@@ -10,6 +10,10 @@ Also, the project provides an automation Python script to generate OVMS model re
 This wrapper API needs 'tensorflow' and 'tensorflow-serving-api' to run.  
 For the users those don't want to install those big libraries, **this project provides an alternative solution**. User can use generated gRPC handler code that is included in this project instead of installing TensorFlow and TensorFlow-serving-API. This alternative solution allows user to submit inference request to OVMS from non-IA client devices very easily.  
 
+The project also includes several demo programs as user's reference.  
+![hp](./samples/human-pose-estimation-2d/resources/human-pose-demo.png)
+![od](./samples/object-tracking-line-crossing-area-intrusion/resources/object-track.gif)
+
 ## Sample client inference code
 ```python
 from ovms_wrapper.ovms_wrapper import OpenVINO_Model_Server
