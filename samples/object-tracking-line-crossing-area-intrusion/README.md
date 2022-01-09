@@ -12,7 +12,9 @@ cp -r ../../ovms_wrapper .
 ```
 
 * (Optional) Copy gRPC handler codes  
-You can use those gRPC handler codes if you don't want to (or cannot) install TensorFlow and tensorflow-serving api.  
+If you have installed TF and TF-serving-api, you can skip this operation.  
+You can use gRPC handler codes instead of TF and TF-serving-api. This is useful when you want to run this demo on a small devices such as Raspberry Pi.  
+
 ```sh
 cp -r ../../_tensorflow ./tensorflow
 cp -r ../../_tensorflow_serving ./tensorflow_serving
