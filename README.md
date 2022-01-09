@@ -47,7 +47,9 @@ python3 -m pip install --update pip setuptools
 python3 -m pip install -r requirements.txt
 ```
 ----
-## How to setup OpenVINO Model Server (Single model support, Ubuntu)
+## How to setup OpenVINO Model Server (Single model support, Ubuntu)  
+When you just need only single IR model to be served by OVMS, you don't need to have model repository. Just specify the model directory and give some information such as model name as option to start the OVMS docker container.   
+This is the easiest way to start OVMS.  
 Note: OVMS can run on Windows too. Please refer to the [official OVMS document](https://docs.openvino.ai/latest/openvino_docs_ovms.html) for details.  
 1. Install prerequisites  
 ```sh
@@ -83,7 +85,7 @@ Now you can run a sample client inference program to test the OVMS.
 
 ----
 ## How to setup OpenVINO Model Server for multiple model support (Ubuntu)  
-
+OVMS requires a model repository which contains the IR models when you want to support multiple models. The repository must follow strict directory and file structure. Also, you need to create a model configuration file in JSON format.  
 ### Prepare the model directory with IR models and configuration files (JSON)  
 1. Install prerequisites  
 ```sh
@@ -214,8 +216,9 @@ python3 model-repo-generator/setup_ovms_model_repo.py -m ir_models -o ovms_repo
 ```
 ![image](resources/repo-generation.png)
 
-## How to run OVMS wrapper API without having TensorFlow and tensorflow-serving-api
-  
+## How to run OVMS wrapper API without having TensorFlow and tensorflow-serving-api  
+TensorFlow and its dependency libraries take up about 2GB of storage space. You may not want to install TF in case the target device is a kind of small and not-powerful device such as low-power ARM based devices.  
+This project offers an alternative solution to resolve this issue. You can use the bundled gRPC handler code instead of TF and TF-serving-api. With those gRPC handler code, it is not necessary to install TF and TF-serving-API to run the OVMS client codes.     
 1. Rename directories  
 Remove '`_`' on top of '`_tensorflow`' and '`_tensorflow_serving`' directory names.  
 This operation would make a name space conflict of Python modules if you have already installed 'tensorflow' and 'tensorflow-serving-api' on your system. You must not have those Python modules.   
