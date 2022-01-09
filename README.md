@@ -14,7 +14,7 @@ The project also includes several demo programs as user's reference.
 ![hp](./samples/human-pose-estimation-2d/resources/human-pose-demo.png)
 ![od](./samples/object-tracking-line-crossing-area-intrusion/resources/object-track.gif)
 
-## Sample client inference code
+## Sample client inference code (Classification - ResNet-50)
 ```python
 from ovms_wrapper.ovms_wrapper import OpenVINO_Model_Server
 
@@ -238,5 +238,21 @@ Now you can use the OVMS wrapper without having 'tensorflow' and 'tensorflow-ser
 ```
 **Exmple:** Running OVMS client program using OVMS wrapper on Raspbian OS (without Tensorflow installed)  
 ![raspberrypi](resources/raspberrypi.png)
+
+## Demo Programs  
+You can try demo programs with OVMS wrapper.  
+You need to download required models and start OVMS before you run the demo programs.
+
+1. Setup OVMS  
+[How to Setup OVMS for Demo Programs](./samples/ovms_setup_for_demos/)
+
+2. Human Pose Estimation demo
+You need to build a C++ based Python module to run demo.  
+[How to run](./samples/human-pose-estimation-2d)  
+![hp](./samples/human-pose-estimation-2d/resources/human-pose-demo.png)
+
+3. Object Detection / Line Crossing / Area Intrusion demo  
+[How to run](./samples/object-tracking-line-crossing-area-intrusion)
+![od](./samples/object-tracking-line-crossing-area-intrusion/resources/object-track.gif)
 
 END
