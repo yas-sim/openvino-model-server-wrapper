@@ -15,13 +15,13 @@ image_file  = 'daisy.jpg'
 img = cv2.imread(image_file)                    # Read an image
 tensor = model.image_preprocess(inblob, img)
 # model.image_preprocess() equivalent
-#  tensor = cv2.resize(img, inblob['shape'][2:])
+#  tensor = cv2.resize(img, inblob.shape[2:])
 #  tensor = tensor.transpose((2,0,1))
-#  tensor = tensor.reshape(inblob['shape']).astype(inblob['dtype_npy'])
+#  tensor = tensor.reshape(inblob.shape).astype(inblob.dtype_npy)
 
-model.raw_infer({ inblob['name']:tensor })       # Raw Infer
+model.raw_infer({ inblob.name:tensor })       # Raw Infer
 res = model.parse_results()                     # Parse (decode) inference result
-result = res[model.outputs[0]['name']]
+result = res[model.outputs[0].name]
 
 # display result
 nu = np.array(result)

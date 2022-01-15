@@ -14,6 +14,21 @@ from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc, model_service_pb2_grpc
 from tensorflow_serving.apis import get_model_metadata_pb2, get_model_status_pb2
 
+class port_info:
+    def __init__(self, name:str, shape:list, dtype_str:str, dtype_pb2:int, dtype_npy:np.dtype):
+        self.name = name
+        self.shape = shape
+        self.dtype_str = dtype_str
+        self.dtype_pb2 = dtype_pb2
+        self.dtype_npy = dtype_npy
+
+    def __str__(self):
+        response = "'name':'{}', 'shape':{}, 'dtype_str':'{}', 'dtype_pb2':{}, 'dtype_npy':{}".format(self.name, self.shape, self.dtype_str, self.dtype_pb2, self.dtype_npy)
+        return response
+
+    def __repr__(self):
+        return self.__str__()
+
 class OVMS_model_info:
     def __init__(self):
         self.logger = logging.getLogger('OVMS_model')
@@ -32,7 +47,7 @@ class OVMS_model_info:
 
     def search_blob(self, blobs, blob_name:str):
         for idx, blob in enumerate(blobs):
-            if blob['name']==blob_name:
+            if blob.name==blob_name:
                 return idx
         return -1
 
@@ -53,7 +68,7 @@ class OVMS_model_info:
             dim = [tensor_shape_pb2.TensorShapeProto.Dim(size=i) for i in bval.shape]
             shape = tensor_shape_pb2.TensorShapeProto(dim=dim)
             content = bval.tobytes()
-            dtype = self.inputs[idx]['dtype_pb2']
+            dtype = self.inputs[idx].dtype_pb2
             tensor = tensor_pb2.TensorProto(dtype=dtype, tensor_shape=shape, tensor_content=content)
             request.inputs[bname].CopyFrom(tensor)
         # submit infer request
@@ -68,16 +83,16 @@ class OVMS_model_info:
             return None
         result = {}
         for outblob in self.outputs:
-            tensor = self.result.outputs[outblob['name']]
+            tensor = self.result.outputs[outblob.name]
             shape = [dim.size for dim in tensor.tensor_shape.dim]
-            content = np.frombuffer(tensor.tensor_content, dtype=outblob['dtype_npy']).reshape(shape)
-            result[outblob['name']] = content
+            content = np.frombuffer(tensor.tensor_content, dtype=outblob.dtype_npy).reshape(shape)
+            result[outblob.name] = content
         return result
 
     def image_preprocess(self, blob, img:np.ndarray):
-        bdata = cv2.resize(img, tuple(blob['shape'][-1:-3:-1]))
+        bdata = cv2.resize(img, tuple(blob.shape[-1:-3:-1]))
         bdata = bdata.transpose((2,0,1))
-        bdata = bdata.reshape(blob['shape']).astype(blob['dtype_npy'])
+        bdata = bdata.reshape(blob.shape).astype(blob.dtype_npy)
         return bdata
 
     def single_image_infer(self, img, timeout:float=10.0):
@@ -86,7 +101,7 @@ class OVMS_model_info:
             return None
         inblob = self.inputs[0]
         bdata = self.image_preprocess(inblob, img)
-        self.raw_infer({inblob['name']:bdata})
+        self.raw_infer({inblob.name:bdata})
         return self.parse_results()
 
 class OpenVINO_Model_Server:
@@ -129,6 +144,7 @@ class OpenVINO_Model_Server:
             status.append({ 'version':i.version, 'state':OpenVINO_Model_Server.state_names[i.state], 'error_code':i.status.error_code, 'error_msg':i.status.error_message})
         return status
 
+
     def open_model(self, model_name:str, timeout:float=10.0):
         model = OVMS_model_info()
         model.model_name = model_name
@@ -157,7 +173,8 @@ class OpenVINO_Model_Server:
             dtype_pb2 = serving_inputs[key].dtype
             dtype_npy = OpenVINO_Model_Server.dtype_npy[dtype_pb2]
             dtype_str = OpenVINO_Model_Server.dtype_str[dtype_pb2]
-            model.inputs.append({'name':name, 'shape':shape, 'dtype_str':dtype_str, 'dtype_pb2':dtype_pb2, 'dtype_npy':dtype_npy})
+            model.inputs.append(port_info(name, shape, dtype_str, dtype_pb2, dtype_npy))
+            #model.inputs.append({'name':name, 'shape':shape, 'dtype_str':dtype_str, 'dtype_pb2':dtype_pb2, 'dtype_npy':dtype_npy})
         # parse output blob info
         for key in serving_outputs.keys():
             name = serving_outputs[key].name
@@ -165,7 +182,8 @@ class OpenVINO_Model_Server:
             dtype_pb2 = serving_outputs[key].dtype
             dtype_npy = OpenVINO_Model_Server.dtype_npy[dtype_pb2]
             dtype_str = OpenVINO_Model_Server.dtype_str[dtype_pb2]
-            model.outputs.append({'name':name, 'shape':shape, 'dtype_str':dtype_str, 'dtype_pb2':dtype_pb2, 'dtype_npy':dtype_npy})
+            model.outputs.append(port_info(name, shape, dtype_str, dtype_pb2, dtype_npy))
+            #model.outputs.append({'name':name, 'shape':shape, 'dtype_str':dtype_str, 'dtype_pb2':dtype_pb2, 'dtype_npy':dtype_npy})
         self.logger.info('input/output blob info: {} / {}'.format(model.inputs, model.outputs))
         model.ovms = self
         model.available = True
