@@ -16,8 +16,7 @@ rm -rf venv__temp
 2. Create OVMS model repository  
 After you generate the model repository, the original model directory and files are no longer needed.  
 ```sh
-python3 ../../model
--repo-generator/setup_ovms_model_repo.py -m intel -o repo
+python3 ../../model-repo-generator/setup_ovms_model_repo.py -m intel -o repo
 ```
 
 3. Start OpenVINO Model Server with the model repository.  

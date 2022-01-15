@@ -223,7 +223,7 @@ def main():
                 cap = cv2.VideoCapture(infile)
                 continue
             detObj = model_det.single_image_infer(image)
-            detObj = detObj[model_det.outputs[0]['name']]
+            detObj = detObj[model_det.outputs[0].name]
             detObj = detObj.reshape((200,7))
 
             objects = []
@@ -240,7 +240,7 @@ def main():
 
                     # Obtain feature vector of the detected object using re-identification model
                     featVec = model_reid.single_image_infer(obj_img)
-                    featVec = featVec[model_reid.outputs[0]['name']].reshape((256))
+                    featVec = featVec[model_reid.outputs[0].name].reshape((256))
                     objects.append(object([xmin,ymin, xmax,ymax], featVec, -1))
 
             tracker.trackObjects(objects)

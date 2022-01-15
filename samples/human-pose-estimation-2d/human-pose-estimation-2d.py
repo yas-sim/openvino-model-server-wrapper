@@ -44,8 +44,8 @@ def main():
     model = ovms.open_model(model_hp)
     print(model.inputs)
     print(model.outputs)
-    HM_blobName  = model.outputs[1]['name']
-    PAF_blobName = model.outputs[0]['name']
+    HM_blobName  = model.outputs[1].name
+    PAF_blobName = model.outputs[0].name
     print(HM_blobName, PAF_blobName)
 
     # Open a USB webcam
@@ -71,4 +71,3 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
-
