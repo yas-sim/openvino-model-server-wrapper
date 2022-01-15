@@ -95,7 +95,7 @@ python3 -m pip install tensorflow tensorflow-serving-api
 ```
 2. Prepare DL models  
 Install OpenVINO for temporal use, and download and convert the models.  
-**Note1:** Following steps are summarized in `'setup_model_repository.sh`' shell script for user's convenience.  
+**Note1:** Following steps are summarized in `'setup_model_repository.[sh|.bat]`' shell script for user's convenience.  
 **Note2:** You don't need to re-create a new 'venv' if you already have one. Just activate it and use it.  
 **Note3:** '`face-detection-0200`' model is a Intel model. It is distributed as an OpenVINO IR model. You can use the model by just downloading it without conversion.   
 ```sh
