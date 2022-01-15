@@ -22,17 +22,17 @@ from ovms_wrapper.ovms_wrapper import OpenVINO_Model_Server
 import cv2
 import numpy as np
 
-ovms = OpenVINO_Model_Server()
-ovms.connect('127.0.0.1', 9000)
+ovms = OpenVINO_Model_Server()              # Create an OVMS class instance
+ovms.connect('127.0.0.1', 9000)             # Connect to an OVMS on 127.0.0.1:9000
 #print(ovms.get_model_status('resnet_50'))
-model = ovms.open_model('resnet_50')
-print(model.inputs, model.outputs)
+model = ovms.open_model('resnet_50')        # Open a model on OVMS
+print(model.inputs, model.outputs)          # Display input/output blob info
 
 # curl -O https://raw.githubusercontent.com/intel-iot-devkit/smart-video-workshop/master/Labs/daisy.jpg
 image_file  = 'daisy.jpg'
 img = cv2.imread(image_file)                # Read an image
 res = model.single_image_infer(img)         # Infer
-result = res[model.outputs[0].name]
+result = res[model.outputs[0].name]         # Retrieve the infer result
 
 # display result
 nu = np.array(result)
@@ -95,7 +95,7 @@ python3 -m pip install tensorflow tensorflow-serving-api
 ```
 2. Prepare DL models  
 Install OpenVINO for temporal use, and download and convert the models.  
-**Note1:** Following steps are summarized in `'setup_model_repository.[sh|.bat]`' shell script for user's convenience.  
+**Note1:** Following steps are summarized in `'setup_model_repository.[sh|bat]`' shell script for user's convenience.  
 **Note2:** You don't need to re-create a new 'venv' if you already have one. Just activate it and use it.  
 **Note3:** '`face-detection-0200`' model is a Intel model. It is distributed as an OpenVINO IR model. You can use the model by just downloading it without conversion.   
 ```sh
