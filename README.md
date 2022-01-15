@@ -32,7 +32,7 @@ print(model.inputs, model.outputs)
 image_file  = 'daisy.jpg'
 img = cv2.imread(image_file)                # Read an image
 res = model.single_image_infer(img)         # Infer
-result = res[model.outputs[0]['name']]
+result = res[model.outputs[0].name]
 
 # display result
 nu = np.array(result)
