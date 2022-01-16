@@ -1,4 +1,5 @@
 # OpenVINO Model Server wrapper API
+import types
 
 import logging, sys
 import grpc
@@ -14,20 +15,14 @@ from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc, model_service_pb2_grpc
 from tensorflow_serving.apis import get_model_metadata_pb2, get_model_status_pb2
 
-class port_info:
+class port_info(types.SimpleNamespace):
     def __init__(self, name:str, shape:list, dtype_str:str, dtype_pb2:int, dtype_npy:np.dtype):
+        super().__init__()
         self.name = name
         self.shape = shape
         self.dtype_str = dtype_str
         self.dtype_pb2 = dtype_pb2
         self.dtype_npy = dtype_npy
-
-    def __str__(self):
-        response = "'name':'{}', 'shape':{}, 'dtype_str':'{}', 'dtype_pb2':{}, 'dtype_npy':{}".format(self.name, self.shape, self.dtype_str, self.dtype_pb2, self.dtype_npy)
-        return response
-
-    def __repr__(self):
-        return self.__str__()
 
 class OVMS_model_info:
     def __init__(self):
@@ -174,7 +169,6 @@ class OpenVINO_Model_Server:
             dtype_npy = OpenVINO_Model_Server.dtype_npy[dtype_pb2]
             dtype_str = OpenVINO_Model_Server.dtype_str[dtype_pb2]
             model.inputs.append(port_info(name, shape, dtype_str, dtype_pb2, dtype_npy))
-            #model.inputs.append({'name':name, 'shape':shape, 'dtype_str':dtype_str, 'dtype_pb2':dtype_pb2, 'dtype_npy':dtype_npy})
         # parse output blob info
         for key in serving_outputs.keys():
             name = serving_outputs[key].name
@@ -183,7 +177,6 @@ class OpenVINO_Model_Server:
             dtype_npy = OpenVINO_Model_Server.dtype_npy[dtype_pb2]
             dtype_str = OpenVINO_Model_Server.dtype_str[dtype_pb2]
             model.outputs.append(port_info(name, shape, dtype_str, dtype_pb2, dtype_npy))
-            #model.outputs.append({'name':name, 'shape':shape, 'dtype_str':dtype_str, 'dtype_pb2':dtype_pb2, 'dtype_npy':dtype_npy})
         self.logger.info('input/output blob info: {} / {}'.format(model.inputs, model.outputs))
         model.ovms = self
         model.available = True
